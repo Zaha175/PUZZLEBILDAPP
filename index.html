@@ -6,103 +6,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entspannungs-Puzzle</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
+     body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        background-color: #f5f5f5; /* Fallback-Farbe, falls Bild nicht lädt */
+        background-image: url('https://cdn.gamma.app/fhpleqvbjim2f32/dd65d9289a314ac5b02ed7272f8feaf2/original/image.png'); /* Hintergrundbild-URL */
+        background-size: cover; /* Bild soll den ganzen Hintergrund abdecken */
+        background-repeat: no-repeat; /* Bild nicht wiederholen */
+        background-attachment: fixed; /* Hintergrundbild fixieren, scrollt nicht mit */
+    }
+
+    h1 {
+        color: #333;
+    }
+
+    #puzzle-container {
+        display: grid;
+        grid-template-columns: repeat(4, 200px); /* Angepasst an die neue Breite der Teile */
+        gap: 15px;
+        margin: 20px 0;
+    }
+
+    .puzzle-piece {
+        width: 200px; /* Breite erhöht */
+        height: 100px; /* Höhe beibehalten */
+        background-size: cover;
+        cursor: pointer;
+        border: 2px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .puzzle-piece:hover {
+        transform: scale(1.1);
+        transition: transform 0.2s ease;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    /* Stil für das Modal */
+    .modal {
+        display: none; /* Zuerst versteckt */
+        position: fixed; /* Bleibt an Ort und Stelle */
+        z-index: 1; /* Soll über allem liegen */
+        left: 0;
+        top: 0;
+        width: 100%; /* Volle Breite */
+        height: 100%; /* Volle Höhe */
+        overflow: auto; /* Scrollen aktivieren, falls Bild größer als Fenster */
+        background-color: rgba(0, 0, 0, 0.9); /* Schwarzer Hintergrund mit Transparenz */
+    }
+
+    /* Modal Inhalt (Bild) */
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: auto; /* Breite auf "auto" gesetzt - Bildgröße passt sich dem Inhalt an */
+        max-width: 90%; /* Maximale Bildbreite bleibt (oder z.B. 1200px) */
+        max-height: 90%; /* Maximale Bildhöhe bleibt (oder z.B. 900px) */
+        margin-top: 50px; /* Abstand vom oberen Rand */
+    }
+
+    /* Schließen-Button */
+    .close-button {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+
+    .close-button:hover,
+    .close-button:focus {
+        color: #bbb;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Media Query für kleinere Bildschirme (z.B. Handys) */
+    @media (max-width: 600px) {
+        .nav {
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f5f5f5; /* Fallback-Farbe, falls Bild nicht lädt */
-            background-image: url('https://cdn.gamma.app/fhpleqvbjim2f32/dd65d9289a314ac5b02ed7272f8feaf2/original/image.png'); /* Hintergrundbild-URL */
-            background-size: cover; /* Bild soll den ganzen Hintergrund abdecken */
-            background-repeat: no-repeat; /* Bild nicht wiederholen */
-            background-attachment: fixed; /* Hintergrundbild fixieren, scrollt nicht mit */
         }
 
-        h1 {
-            color: #333;
+        .nav button {
+            width: 100%;
         }
 
-        #puzzle-container {
-            display: grid;
-            grid-template-columns: repeat(4, 200px); /* Angepasst an die neue Breite der Teile */
-            gap: 15px;
-            margin: 20px 0;
+        .breathing-circle {
+            width: 150px;
+            height: 150px;
         }
 
-        .puzzle-piece {
-            width: 200px; /* Breite erhöht */
-            height: 100px; /* Höhe beibehalten */
-            background-size: cover;
-            cursor: pointer;
-            border: 2px solid #ccc;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        .color-box {
+            width: 80px;
+            height: 80px;
         }
 
-        .puzzle-piece:hover {
-            transform: scale(1.1);
-            transition: transform 0.2s ease;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #fff;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Stil für das Modal */
         .modal {
-            display: none; /* Zuerst versteckt */
-            position: fixed; /* Bleibt an Ort und Stelle */
-            z-index: 1; /* Soll über allem liegen */
-            left: 0;
-            top: 0;
-            width: 100%; /* Volle Breite */
-            height: 100%; /* Volle Höhe */
-            overflow: auto; /* Scrollen aktivieren, falls Bild größer als Fenster */
-            background-color: rgba(0, 0, 0, 0.9); /* Schwarzer Hintergrund mit Transparenz */
+            padding: 10px; /* Optional: Padding zum Modal für mehr Abstand auf Handys */
         }
 
-        /* Modal Inhalt (Bild) */
-       .modal-content {
-    margin: auto;
-    display: block;
-    width: auto; /* Breite auf "auto" gesetzt - Bildgröße passt sich dem Inhalt an */
-    max-width: 90%; /* Maximale Bildbreite bleibt (oder z.B. 1200px) */
-    max-height: 90%; /* Maximale Bildhöhe bleibt (oder z.B. 900px) */
-    margin-top: 50px; /* Abstand vom oberen Rand */
-}
-
-        /* Schließen-Button */
-        .close-button {
-            position: absolute;
-            top: 15px;
-            right: 35px;
-            color: #f1f1f1;
-            font-size: 40px;
-            font-weight: bold;
-            transition: 0.3s;
-            cursor: pointer;
+        .modal-content {
+            max-width: 100%; /* WICHTIG: Maximale Breite auf 100% für Handys! */
+            height: auto;     /* Optionale, aber empfohlene Höhenanpassung */
+            margin-top: 10px; /* Optional: Weniger Abstand vom oberen Rand auf Handys */
         }
-
-        .close-button:hover,
-        .close-button:focus {
-            color: #bbb;
-            text-decoration: none;
-            cursor: pointer;
-        }
+    }
     </style>
 </head>
 
